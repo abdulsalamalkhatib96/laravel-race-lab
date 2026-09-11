@@ -1,5 +1,7 @@
 name: tests
+
 on: [push, pull_request]
+
 jobs:
   test:
     strategy:
@@ -8,17 +10,28 @@ jobs:
         include:
           - php: '8.2'
             testbench: '^9.0'
+            composer_no_blocking: '1'
           - php: '8.3'
             testbench: '^10.0'
+            composer_no_blocking: '0'
           - php: '8.4'
             testbench: '^11.0'
+            composer_no_blocking: '0'
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           coverage: none
+
       - run: composer require --dev --no-update "orchestra/testbench:${{ matrix.testbench }}"
       - run: composer update --prefer-dist --no-interaction --no-progress
+        env:
+          # Laravel 11 is retained only as a compatibility target. Current Composer
+          # blocks its historical releases because of known advisories, so policy
+          # blocking is disabled for this isolated CI matrix row only.
+          COMPOSER_NO_BLOCKING: ${{ matrix.composer_no_blocking }}
       - run: vendor/bin/phpunit
