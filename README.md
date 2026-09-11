@@ -6,10 +6,20 @@ Instead of running a test hundreds of times and hoping the scheduler exposes a r
 
 ## Install
 
+Until the first Packagist release, install directly from this GitHub repository:
+
 ```bash
-composer require --dev race-lab/laravel-race-lab
+composer config repositories.race-lab vcs https://github.com/abdulsalamalkhatib96/laravel-race-lab
+composer require --dev race-lab/laravel-race-lab:dev-main
+
 php artisan vendor:publish --tag=race-lab-config
 php artisan race-lab:doctor
+```
+
+After the package is published on Packagist, installation becomes:
+
+```bash
+composer require --dev race-lab/laravel-race-lab
 ```
 
 Supported target: PHP 8.2+, Laravel 11/12/13. MySQL/MariaDB and PostgreSQL are first-class targets. SQLite has different locking semantics and should not be used to prove production concurrency correctness.
